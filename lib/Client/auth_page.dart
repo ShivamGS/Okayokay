@@ -11,7 +11,7 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // final authService = Provider.of<AuthService>(context);
     final userProvider = Provider.of<UserProvider>(context);
-    print(userProvider.getuser());
+    // print(userProvider.getuser());
 
     return Scaffold(
       body: Center(

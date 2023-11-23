@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:toll_system_final0/Client/Auth/provider/provider.dart';
 
 class LocationMonitor extends StatefulWidget {
   @override
@@ -12,11 +15,14 @@ class LocationMonitor extends StatefulWidget {
 
 class _LocationMonitorState extends State<LocationMonitor> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // UserProvider _userprovider = UserProvider();
   final Geolocator _geolocator = Geolocator();
-  final double thresholdDistance = 50.0;
+  final double thresholdDistance = 1100;
+  Map<String, DateTime> visitedMarkers = {};
   final Duration checkInterval = const Duration(minutes: 20);
   bool loaded = false;
   Position? _position;
+  late User? user;
 
   bool _isMounted = false;
 
@@ -27,6 +33,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
   Map<String, DateTime> lastCheckTimes = {};
   String nearestLocation = "";
 
+  double nearestLocation_distance = 0;
   @override
   void initState() {
     super.initState();
@@ -53,21 +60,36 @@ class _LocationMonitorState extends State<LocationMonitor> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    user = userProvider.getuser();
     return (loaded)
-        ? GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(
-                _position?.latitude ?? 0.0,
-                _position?.longitude ?? 0.0,
+        ? Column(
+            children: [
+              Container(
+                child: Text(nearestLocation),
               ),
-              zoom: 100.0,
-            ),
-            onMapCreated: (GoogleMapController controller) {
-              setState(() {
-                _mapController = controller;
-              });
-            },
-            markers: markers,
+              Container(
+                child: Text(nearestLocation_distance.toString()),
+              ),
+              Container(
+                height: 500,
+                child: GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      _position?.latitude ?? 0.0,
+                      _position?.longitude ?? 0.0,
+                    ),
+                    zoom: 100.0,
+                  ),
+                  onMapCreated: (GoogleMapController controller) {
+                    setState(() {
+                      _mapController = controller;
+                    });
+                  },
+                  markers: markers,
+                ),
+              ),
+            ],
           )
         : CircularProgressIndicator();
   }
@@ -96,10 +118,12 @@ class _LocationMonitorState extends State<LocationMonitor> {
         String name = doc['name'].toString();
         double latitude = double.parse(doc['latitude'].toString());
         double longitude = double.parse(doc['longitude'].toString());
+        double price = double.parse(doc['price'].toString());
 
         monitoredLocations[name] = {
           'latitude': latitude,
           'longitude': longitude,
+          'price': price,
         };
         // print(monitoredLocations[name]);
         lastCheckTimes[name] = DateTime.now();
@@ -121,7 +145,9 @@ class _LocationMonitorState extends State<LocationMonitor> {
       double minDistance = double.infinity; // Initialize minimum distance
       String nearest = ""; // Initialize nearest location name
 
-      _position = position;
+      setState(() {
+        _position = position;
+      });
       addTemporaryMarker(LatLng(position.latitude, position.longitude));
       monitoredLocations.forEach((name, coordinates) {
         double distance = Geolocator.distanceBetween(
@@ -131,19 +157,49 @@ class _LocationMonitorState extends State<LocationMonitor> {
           coordinates['longitude']!,
         );
 
-        print(distance);
-        print("distance");
+        double price = coordinates['price']!;
+
+        if (visitedMarkers.containsKey(name)) {
+          DateTime orangeTimestamp = visitedMarkers[name]!;
+          Duration elapsed = DateTime.now().difference(orangeTimestamp);
+
+          // After 30 seconds, mark the marker to blue
+          if (elapsed > Duration(seconds: 20)) {
+            updateMarkerIcon(
+                name,
+                BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueBlue));
+            visitedMarkers
+                .remove(name); // Remove the marker from the orangeMarkers map
+          }
+
+          // Skip the distance check for this marker
+          return;
+        }
+
         if (distance < minDistance) {
           minDistance = distance;
           nearest = name;
+          setState(() {
+            distance = minDistance;
+            nearestLocation_distance = distance;
+          });
         }
 
-        if (distance <= thresholdDistance &&
-            DateTime.now().difference(lastCheckTimes[name]!) >= checkInterval) {
+        if (distance <= thresholdDistance
+            // &&  DateTime.now().difference(lastCheckTimes[name]!) >= checkInterval
+            ) {
           // Send payment link when within 50 meters
           double price = 100;
 
           lastCheckTimes[name] = DateTime.now();
+          updateMarkerIcon(
+              name,
+              BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueOrange));
+          visitedMarkers[name] = DateTime.now();
+          // print("helowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+          TollFatka(name, price);
         }
       });
 
@@ -151,6 +207,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
         // Check if the widget is still mounted.
         setState(() {
           nearestLocation = nearest;
+          nearestLocation_distance = minDistance;
         });
       }
 
@@ -201,5 +258,65 @@ class _LocationMonitorState extends State<LocationMonitor> {
         ),
       );
     });
+  }
+
+  void updateMarkerIcon(String markerIdValue, BitmapDescriptor newIcon) {
+    // Find the marker with the specified MarkerId
+    Marker? targetMarker = markers.firstWhere(
+      (marker) => marker.markerId.value == markerIdValue,
+    );
+
+    if (targetMarker != null) {
+      // Create a new marker with updated properties
+      Marker updatedMarker = targetMarker.copyWith(
+        iconParam: newIcon,
+      );
+
+      // Update the set with the new marker
+      markers = markers
+          .where((marker) => marker.markerId.value != markerIdValue)
+          .toSet()
+        ..add(updatedMarker);
+    }
+    setState(() {
+      // Ensure that the changes are reflected in the UI
+      markers;
+    });
+  }
+
+  void TollFatka(String name, double price) {
+    // Query for the document with the specified  ;user ID
+    _firestore.collection('Users').doc(user!.uid).get().then(
+      (DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          // Document found, use its reference to add a collection
+          DocumentReference docRef = documentSnapshot.reference;
+
+          // Add a collection to the document
+          docRef.collection('challan').add({
+            'timestamp': FieldValue.serverTimestamp(),
+            'price': price,
+            'name': name,
+            'paid': false
+            // Add other fields as needed
+          }).then(
+            (value) {
+              print('Collection added to document with name $name');
+            },
+          ).catchError(
+            (error) {
+              print('Error adding collection: $error');
+            },
+          );
+        } else {
+          print(
+              'Document not found for user ID ${UserProvider().getuser()!.uid}');
+        }
+      },
+    ).catchError(
+      (error) {
+        print('Error querying for document: $error');
+      },
+    );
   }
 }

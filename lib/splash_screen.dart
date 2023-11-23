@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:toll_system_final0/Client/Auth/provider/provider.dart';
 import 'package:toll_system_final0/Client/Screens/client_map.dart';
 import 'package:toll_system_final0/Client/Screens/home_screen.dart';
+import 'package:toll_system_final0/Client/Screens/sign_in.dart';
 import 'package:toll_system_final0/Client/auth_page.dart';
 import 'package:toll_system_final0/splash_screen_notifier.dart';
 import 'package:toll_system_final0/widgets/loading.dart';
@@ -76,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HomeScreen(),
+                              builder: (context) => AuthScreen(),
                             ),
                           );
                         },

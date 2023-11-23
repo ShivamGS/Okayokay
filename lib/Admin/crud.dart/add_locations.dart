@@ -86,7 +86,8 @@ class _AddLocationState extends State<AddLocation> {
       'latitude': _latitude.text,
       'longitude': _longitude.text,
       'name': _tollname.text,
-      'price': _price.text
+      'price': _price.text,
+      'visited': false
     });
 
     if (res.id != null) {

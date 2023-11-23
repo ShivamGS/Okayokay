@@ -5,6 +5,7 @@ import 'package:toll_system_final0/Admin/Widgets/snackbar.dart';
 // import 'package:provider/provider.dart';
 import 'package:toll_system_final0/Client/Auth/auth/auth_services.dart';
 import 'package:toll_system_final0/Client/Auth/provider/provider.dart';
+import 'package:toll_system_final0/Client/Screens/home_screen.dart';
 
 import '../Auth/model/user.dart';
 
@@ -28,6 +29,10 @@ class _SignInPageState extends State<SignInPage> {
 
       if (_user != null) {
         userProvider.setUser(_user);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
       } else {
         showCustomSnackBar(context, "");
       }
