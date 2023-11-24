@@ -8,34 +8,64 @@ class AdminPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Hellow"),
-        ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      goto(0, context);
-                    },
-                    child: Container(
-                      child: Text("Tolls"),
-                    )),
-                ElevatedButton(
-                    onPressed: () {
-                      goto(1, context);
-                    },
-                    child: Container(
-                      child: Text("Users Information"),
-                    ))
-              ],
-            ),
+      appBar: AppBar(
+        title: const Text("Government"),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  goto(0, context);
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: Text(
+                      "Tolls",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  goto(1, context);
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: Text(
+                      "Users Information",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   goto(int i, BuildContext context) {

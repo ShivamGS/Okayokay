@@ -52,43 +52,85 @@ class _SplashScreenState extends State<SplashScreen>
     final notifier = Provider.of<SplashScreenNotifier>(context);
 
     return Scaffold(
-      body: (notifier.user == null)
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AdminPage()),
-                          );
-                        },
-                        child: Text('Admin'),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: (notifier.user == null)
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/toll.avif',
+                      width: 300, // Adjust the width as needed
+                      height: 250, // Adjust the height as needed
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Welcome to Toll Collection System!',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AuthScreen(),
-                            ),
-                          );
-                        },
-                        child: Text('Client'),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AdminPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          : Loading(child: Text("Loading")),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 20,
+                        ),
+                        child: Text(
+                          'Toll Handler',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AuthScreen(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 20,
+                        ),
+                        child: Text(
+                          'Client',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : Loading(child: Text("Loading")),
+        ),
+      ),
     );
   }
 

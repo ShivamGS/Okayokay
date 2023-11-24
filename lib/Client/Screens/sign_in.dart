@@ -50,22 +50,44 @@ class _SignInPageState extends State<SignInPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
             ),
+            SizedBox(height: 12),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true, // Hide the password input.
+              decoration: InputDecoration(
+                labelText: 'Password',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true,
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 _handleSignIn(context);
               },
-              child: Text('Login'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                ),
+                child: Text(
+                  'Login',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
             ),
           ],
         ),
