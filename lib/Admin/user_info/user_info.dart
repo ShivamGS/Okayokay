@@ -55,7 +55,6 @@ class _UserInfoState extends State<UserInfo> {
                     final dataToDisplay = _filteredData.isNotEmpty
                         ? _filteredData
                         : snapshot.data!.docs;
-
                     return Padding(
                       padding: const EdgeInsets.all(20),
                       child: ListView.builder(

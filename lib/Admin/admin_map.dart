@@ -82,6 +82,10 @@ class AdminMapState extends State<AdminMap> {
                               DeleteTollPage(), // Create DeletePage
                         ),
                       );
+
+                      setState(() {
+                        markers;
+                      });
                     },
                     label: const Text('Delete Markers'),
                     icon: const Icon(Icons.delete),
