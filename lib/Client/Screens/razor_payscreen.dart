@@ -37,7 +37,7 @@ class _RazePayState extends State<RazePay> {
       'name': 'Goverment',
       'description': 'Demo Toll',
       'timeout': 300,
-      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'}
+      'prefill': {'contact': '8291680311', 'email': 'test@razorpay.com'}
     };
     _razorpay.open(options);
   }
@@ -155,13 +155,44 @@ class _RazePayState extends State<RazePay> {
                           children: [
                             Icon(
                               Icons.currency_rupee_outlined,
-                              size: 64,
+                              size: 50,
+                              color: Colors.green,
                             ),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Time  :  $formattedDateTime'),
-                                Text('Toll Name ${document['name']}'),
-                                Text('Amount :  ${document['price']}'),
+                                Text(
+                                  'Time: $formattedDateTime',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(
+                                    height:
+                                        8), // Adds space between the text widgets
+                                Text(
+                                  'Toll Name: ${document['name']}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Amount: ${document['price']}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "Paid",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.lightBlue),
+                                )
                               ],
                             )
                           ],
@@ -224,13 +255,38 @@ class _RazePayState extends State<RazePay> {
                           children: [
                             Icon(
                               Icons.currency_rupee_outlined,
-                              size: 64,
+                              color: Colors.green,
+                              size: 50,
                             ),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Time  :  $formattedDateTime'),
-                                Text('Toll Name ${document['name']}'),
-                                Text('Amount :  ${document['price']}'),
+                                Text(
+                                  'Time: $formattedDateTime',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(
+                                    height:
+                                        8), // Adds space between the text widgets
+                                Text(
+                                  'Toll Name: ${document['name']}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Amount: ${document['price']}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.red,
+                                  ),
+                                ),
                               ],
                             ),
                             SizedBox(
@@ -238,18 +294,37 @@ class _RazePayState extends State<RazePay> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                markPaid(userProvider.user!.uid, document.id);
                                 razorpay((double.parse(
                                             document['price'].toString()) *
                                         100)
                                     .toString());
+                                markPaid(userProvider.user!.uid, document.id);
                               },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 50,
                                 width: 50,
-                                decoration: BoxDecoration(color: Colors.blue),
-                                child: Text("Pay"),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(
+                                      10), // Adds rounded corners
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(
+                                          0, 3), // Changes the shadow position
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  "Pay",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             )
                           ],

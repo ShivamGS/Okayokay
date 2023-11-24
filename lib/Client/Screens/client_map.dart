@@ -17,7 +17,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // UserProvider _userprovider = UserProvider();
   final Geolocator _geolocator = Geolocator();
-  final double thresholdDistance = 500;
+  final double thresholdDistance = 600;
   Map<String, DateTime> visitedMarkers = {};
   final Duration checkInterval = const Duration(minutes: 20);
   bool loaded = false;
@@ -66,11 +66,25 @@ class _LocationMonitorState extends State<LocationMonitor> {
     return (loaded)
         ? Column(
             children: [
-              Container(
-                child: Text(nearestLocation),
+              StyledContainer(
+                child: Text(
+                  "Nearest Toll is $nearestLocation",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
               ),
-              Container(
-                child: Text(nearestLocation_distance.toString()),
+              SizedBox(height: 12),
+              StyledContainer(
+                child: Text(
+                  "Distance from nearest Toll is ${nearestLocation_distance.toStringAsFixed(3)} m",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.green,
+                  ),
+                ),
               ),
               Flexible(
                   child: GoogleMap(
@@ -163,7 +177,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
           Duration elapsed = DateTime.now().difference(orangeTimestamp);
 
           // After 30 seconds, mark the marker to blue
-          if (elapsed > Duration(seconds: 20)) {
+          if (elapsed > Duration(seconds: 60)) {
             updateMarkerIcon(
                 name,
                 BitmapDescriptor.defaultMarkerWithHue(
@@ -316,6 +330,32 @@ class _LocationMonitorState extends State<LocationMonitor> {
       (error) {
         print('Error querying for document: $error');
       },
+    );
+  }
+}
+
+class StyledContainer extends StatelessWidget {
+  final Widget child;
+
+  StyledContainer({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }
