@@ -19,6 +19,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
   final Geolocator _geolocator = Geolocator();
   final double thresholdDistance = 600;
   Map<String, DateTime> visitedMarkers = {};
+  Map<String, DateTime> time_valid = {};
   final Duration checkInterval = const Duration(minutes: 20);
   bool loaded = false;
   Position? _position;
@@ -177,7 +178,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
           Duration elapsed = DateTime.now().difference(orangeTimestamp);
 
           // After 30 seconds, mark the marker to blue
-          if (elapsed > Duration(seconds: 60)) {
+          if (elapsed > Duration(seconds: 10)) {
             updateMarkerIcon(
                 name,
                 BitmapDescriptor.defaultMarkerWithHue(
@@ -203,7 +204,6 @@ class _LocationMonitorState extends State<LocationMonitor> {
             // &&  DateTime.now().difference(lastCheckTimes[name]!) >= checkInterval
             ) {
           // Send payment link when within 50 meters
-          double price = 100;
 
           lastCheckTimes[name] = DateTime.now();
           updateMarkerIcon(
@@ -212,6 +212,13 @@ class _LocationMonitorState extends State<LocationMonitor> {
                   BitmapDescriptor.hueOrange));
           visitedMarkers[name] = DateTime.now();
           // print("helowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+
+          if (time_valid.containsKey(name)) {
+            DateTime last_visited = time_valid[name]!;
+            Duration el = DateTime.now().difference(last_visited);
+
+            if (el > Duration(seconds: 20)) ;
+          }
           TollFatka(name, price);
         }
       });

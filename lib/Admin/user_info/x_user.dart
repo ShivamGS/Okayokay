@@ -15,19 +15,19 @@ class UserCard extends StatelessWidget {
       appBar: AppBar(
         title: Text(user['firstName']),
         actions: [
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              primary: Colors.blue,
-            ),
-            child: Text(
-              "Total Amount to Pay: ${user['Money to pay']}",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {},
+          //   style: ElevatedButton.styleFrom(
+          //     primary: Colors.blue,
+          //   ),
+          //   // child: Text(
+          //   //   "Total Amount to Pay: ${user['Money to pay']}",
+          //   //   style: TextStyle(
+          //   //     fontSize: 16,
+          //   //     color: Colors.white,
+          //   //   ),
+          //   // ),
+          // ),
         ],
       ),
       body: Container(
