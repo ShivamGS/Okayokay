@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:toll_system_final0/Admin/admin_map.dart';
+import 'package:toll_system_final0/Admin/tollinfo.dart';
 import 'package:toll_system_final0/Admin/user_info/user_info.dart';
 
 class AdminPage extends StatelessWidget {
-  List Pages = [AdminMap(), UserInfo()];
+  List Pages = [AdminMap(), UserInfo(), tollInfo()];
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +57,28 @@ class AdminPage extends StatelessWidget {
                   child: Center(
                     child: Text(
                       "Users Information",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  goto(2, context);
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: Text(
+                      "Toll Information",
                       style: TextStyle(fontSize: 18),
                     ),
                   ),

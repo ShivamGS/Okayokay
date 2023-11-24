@@ -20,13 +20,13 @@ class UserCard extends StatelessWidget {
           //   style: ElevatedButton.styleFrom(
           //     primary: Colors.blue,
           //   ),
-          //   // child: Text(
-          //   //   "Total Amount to Pay: ${user['Money to pay']}",
-          //   //   style: TextStyle(
-          //   //     fontSize: 16,
-          //   //     color: Colors.white,
-          //   //   ),
-          //   // ),
+          //   child: Text(
+          //     "Total Amount to Pay: ${user['Money to pay']}",
+          //     style: TextStyle(
+          //       fontSize: 16,
+          //       color: Colors.white,
+          //     ),
+          //   ),
           // ),
         ],
       ),
@@ -88,6 +88,62 @@ class UserCard extends StatelessWidget {
               ),
             ),
             // Add your toll history widgets here
+
+            Container(
+              height: 500,
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('Users')
+                    .doc(user.id)
+                    .collection('challan')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Center(
+                      child: Text('No challan data available'),
+                    );
+                  }
+
+                  // Extract and display three fields from each document in the 'challan' collection
+                  List<Widget> challanWidgets =
+                      snapshot.data!.docs.map((document) {
+                    Map<String, dynamic> challanData =
+                        document.data() as Map<String, dynamic>;
+                    Timestamp timestamp = challanData['timestamp'];
+                    String formattedDateTime =
+                        DateFormat.yMd().add_Hms().format(timestamp.toDate());
+
+                    return ListTile(
+                      title: Text('Toll Name: ${challanData['name']}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Text('paid: ${challanData['']}'),
+                          Text('price: ${challanData['price']}'),
+                          Text('Timestamp: $formattedDateTime'),
+                        ],
+                      ),
+                    );
+                  }).toList();
+
+                  return ListView(
+                    children: challanWidgets,
+                  );
+                },
+              ),
+            )
           ],
         ),
       ),

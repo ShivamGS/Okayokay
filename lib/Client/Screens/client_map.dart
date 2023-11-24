@@ -217,8 +217,11 @@ class _LocationMonitorState extends State<LocationMonitor> {
             DateTime last_visited = time_valid[name]!;
             Duration el = DateTime.now().difference(last_visited);
 
-            if (el > Duration(seconds: 20)) ;
+            if (el > Duration(seconds: 20)) {
+              price = price / 2;
+            }
           }
+          time_valid[name] = DateTime.now();
           TollFatka(name, price);
         }
       });

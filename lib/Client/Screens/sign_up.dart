@@ -36,14 +36,48 @@ class _SignupPageState extends State<SignupPage> {
     String vehicleType = _vehicleTypeController.text;
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    if (firstName == '' ||
-        lastName == '' ||
-        email == '' ||
-        mobileNumber == '' ||
-        mobileNumber.length != 10 ||
-        vehicleNumber == '' ||
-        vehicleType == '') {
-      showCustomSnackBar(context, "All Feilds Needed ");
+    if (firstName.isEmpty) {
+      showCustomSnackBar(context, "First name cannot be empty");
+      return;
+    }
+
+    if (lastName.isEmpty) {
+      showCustomSnackBar(context, "Last name cannot be empty");
+      return;
+    }
+
+    if (email.isEmpty) {
+      showCustomSnackBar(context, "Email cannot be empty");
+      return;
+    }
+
+    if (!email.endsWith("@gmail.com")) {
+      showCustomSnackBar(context, "Email must end with @gmail.com");
+      return;
+    }
+
+    if (mobileNumber.isEmpty) {
+      showCustomSnackBar(context, "Mobile number cannot be empty");
+      return;
+    }
+
+    if (mobileNumber.length != 10) {
+      showCustomSnackBar(context, "Mobile number must be 10 digits");
+      return;
+    }
+
+    if (vehicleNumber.isEmpty) {
+      showCustomSnackBar(context, "Vehicle number cannot be empty");
+      return;
+    }
+
+    if (vehicleNumber.length != 10) {
+      showCustomSnackBar(context, "Vehicle number incorrect");
+      return;
+    }
+
+    if (vehicleType.isEmpty) {
+      showCustomSnackBar(context, "Vehicle type cannot be empty");
       return;
     }
 

@@ -5,7 +5,7 @@ import 'package:toll_system_final0/Admin/user_info/x_user.dart';
 import '../Widgets/search_bar.dart';
 
 class UserInfo extends StatefulWidget {
-  const UserInfo({super.key});
+  const UserInfo({Key? key}) : super(key: key);
 
   @override
   State<UserInfo> createState() => _UserInfoState();
@@ -14,7 +14,6 @@ class UserInfo extends StatefulWidget {
 class _UserInfoState extends State<UserInfo> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _searchController = TextEditingController();
-  List<DocumentSnapshot> _filteredData = [];
 
   @override
   void initState() {
@@ -22,17 +21,8 @@ class _UserInfoState extends State<UserInfo> {
     _searchController.addListener(_onSearchTextChanged);
   }
 
-  void _onSearchTextChanged() async {
-    await _firestore.collection("Users").snapshots().forEach((element) {
-      setState(() {
-        _filteredData = element.docs.where((userDoc) {
-          final vehicleNumber =
-              userDoc["vehicleNumber"].toString().toLowerCase();
-          final query = _searchController.text.toLowerCase();
-          return vehicleNumber.contains(query);
-        }).toList();
-      });
-    });
+  void _onSearchTextChanged() {
+    setState(() {});
   }
 
   @override
@@ -52,47 +42,52 @@ class _UserInfoState extends State<UserInfo> {
                   if (!snapshot.hasData) {
                     return Center(child: Text("No data"));
                   } else {
-                    final dataToDisplay = _filteredData.isNotEmpty
-                        ? _filteredData
-                        : snapshot.data!.docs;
-
                     return Padding(
                       padding: const EdgeInsets.all(20),
-                      child: ListView.builder(
-                        itemCount: dataToDisplay.length,
+                      child: ListView.separated(
+                        itemCount: snapshot.data!.docs.length,
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 8),
                         itemBuilder: (context, index) {
-                          final userDoc = dataToDisplay[index];
-                          return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.black,
-                                      width: 2.0), // Border color and width
-                                  borderRadius: BorderRadius.circular(
-                                      50.0), // Circular border radius
-                                  color: Colors.white, // Background color
+                          final userDoc = snapshot.data!.docs[index];
+                          final vehicleNumber =
+                              userDoc["vehicleNumber"].toString().toLowerCase();
+                          final query = _searchController.text.toLowerCase();
+
+                          if (vehicleNumber.contains(query)) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2.0,
                                 ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserCard(user: userDoc),
-                                      ),
-                                    );
-                                  },
-                                  child: ListTile(
-                                    title: Text(userDoc["firstName"] +
-                                        " " +
-                                        userDoc["lastName"]),
-                                    subtitle: Text(userDoc["vehicleNumber"]
-                                        .toString()
-                                        .toUpperCase()),
-                                  ),
+                                borderRadius: BorderRadius.circular(50.0),
+                                color: Colors.white,
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          UserCard(user: userDoc),
+                                    ),
+                                  );
+                                },
+                                child: ListTile(
+                                  title: Text(userDoc["firstName"] +
+                                      " " +
+                                      userDoc["lastName"]),
+                                  subtitle: Text(userDoc["vehicleNumber"]
+                                      .toString()
+                                      .toUpperCase()),
                                 ),
-                              ));
+                              ),
+                            );
+                          } else {
+                            // Return an empty container if not matching the search
+                            return Container();
+                          }
                         },
                       ),
                     );

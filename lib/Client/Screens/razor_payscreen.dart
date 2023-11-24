@@ -30,16 +30,36 @@ class _RazePayState extends State<RazePay> {
   int _currentIndex = 0;
   PageController _pageController = PageController();
 
-  razorpay(String amount) {
-    var options = {
-      'key': "rzp_test_kJknC6fdavJgMJ",
-      'amount': (amount).toString(),
-      'name': 'Goverment',
-      'description': 'Demo Toll',
-      'timeout': 300,
-      'prefill': {'contact': '8291680311', 'email': 'test@razorpay.com'}
-    };
-    _razorpay.open(options);
+  razorpay(String amount) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    CollectionReference users = FirebaseFirestore.instance.collection('Users');
+    print("Hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    print(userProvider.user!.uid);
+    try {
+      DocumentSnapshot documentSnapshot =
+          await users.doc(userProvider.user!.uid).get();
+
+      if (documentSnapshot.exists) {
+        // Replace 'field_name' with the actual name of the field you want to retrieve
+        var fieldValue = documentSnapshot.get('mobileNumber');
+        var options = {
+          'key': "rzp_test_kJknC6fdavJgMJ",
+          'amount': (amount).toString(),
+          'name': 'Goverment',
+          'description': 'Demo Toll',
+          'timeout': 300,
+          'prefill': {'contact': fieldValue, 'email': 'test@razorpay.com'}
+        };
+        _razorpay.open(options);
+        print('Field Value: $fieldValue');
+      } else {
+        print('No such document!');
+      }
+    } catch (e) {
+      print('Error getting document: $e');
+    }
+
+    // final _number = await FirebaseFirestore.instance.collection("Users");
   }
 
   void markPaid(String userId, String documentId) async {
@@ -134,7 +154,10 @@ class _RazePayState extends State<RazePay> {
 
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Center(
-                      child: Text('No data available'),
+                      child: Text(
+                        'No Data Available',
+                        style: TextStyle(fontSize: 24),
+                      ),
                     );
                   }
 
@@ -232,7 +255,10 @@ class _RazePayState extends State<RazePay> {
 
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Center(
-                      child: Text('No data available'),
+                      child: Text(
+                        'No Data Available',
+                        style: TextStyle(fontSize: 24),
+                      ),
                     );
                   }
 
