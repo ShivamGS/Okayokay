@@ -21,7 +21,7 @@ class _AdminAuthState extends State<AdminAuth> {
       showCustomSnackBar(context, "Wrong Email address");
       return;
     }
-    if (email != "government123") {
+    if (password != "government123") {
       showCustomSnackBar(context, "Wrong Password");
       return;
     }
