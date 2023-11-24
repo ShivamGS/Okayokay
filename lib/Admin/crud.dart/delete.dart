@@ -79,6 +79,7 @@ class _DeleteTollPageState extends State<DeleteTollPage> {
     if (querySnapshot.docs.isNotEmpty) {
       // Assuming there's only one document with the given Toll Name
       final documentId = querySnapshot.docs[0].id;
+      _tollNameController.text = "";
 
       await _firestore.collection('Tolls').doc(documentId).delete();
       showCustomSnackBar(context, "Toll Deleted");

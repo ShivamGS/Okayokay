@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:toll_system_final0/Admin/Widgets/snackbar.dart';
 import 'package:toll_system_final0/Client/Auth/auth/auth_services.dart';
 import 'package:toll_system_final0/Client/Auth/provider/provider.dart';
+import 'package:toll_system_final0/Client/Screens/home_screen.dart';
+import 'package:toll_system_final0/widgets/loading.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -16,19 +18,34 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _mobileNumberController = TextEditingController();
+  final TextEditingController _vehicleTypeController = TextEditingController();
   final TextEditingController _vehicleNumberController =
       TextEditingController();
+  bool loading = false;
 
   final AuthService _authService = AuthService();
 
   void _handleSignup(BuildContext context) async {
+    loading = true;
     String firstName = _firstNameController.text;
     String lastName = _lastNameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
     String mobileNumber = _mobileNumberController.text;
     String vehicleNumber = _vehicleNumberController.text;
+    String vehicleType = _vehicleTypeController.text;
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    if (firstName == '' ||
+        lastName == '' ||
+        email == '' ||
+        mobileNumber == '' ||
+        mobileNumber.length != 10 ||
+        vehicleNumber == '' ||
+        vehicleType == '') {
+      showCustomSnackBar(context, "All Feilds Needed ");
+      return;
+    }
 
     User? _user = await _authService.signUp(
         email: email,
@@ -45,55 +62,68 @@ class _SignupPageState extends State<SignupPage> {
     if (_user == null) {
       showCustomSnackBar(context, "Some error happned");
     }
-
-    // print(userProvider.getuser());
+    loading = false;
+    userProvider.setUser(_user);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Signup'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _firstNameController,
-              decoration: InputDecoration(labelText: 'First Name'),
+    return (loading)
+        ? CircularProgressIndicator()
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Signup'),
             ),
-            TextField(
-              controller: _lastNameController,
-              decoration: InputDecoration(labelText: 'Last Name'),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _firstNameController,
+                      decoration: InputDecoration(labelText: 'First Name'),
+                    ),
+                    TextField(
+                      controller: _lastNameController,
+                      decoration: InputDecoration(labelText: 'Last Name'),
+                    ),
+                    TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(labelText: 'Email'),
+                    ),
+                    TextField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(labelText: 'Password'),
+                      obscureText: true, // Hide the password input.
+                    ),
+                    TextField(
+                      controller: _mobileNumberController,
+                      decoration: InputDecoration(labelText: 'Mobile Number'),
+                    ),
+                    TextField(
+                      controller: _vehicleNumberController,
+                      decoration: InputDecoration(labelText: 'Vehicle Number'),
+                    ),
+                    TextField(
+                      controller: _vehicleTypeController,
+                      decoration: InputDecoration(
+                          labelText: 'Vehicle Type/No. of Wheels'),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        _handleSignup(context);
+                      },
+                      child: Text('Sign Up'),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true, // Hide the password input.
-            ),
-            TextField(
-              controller: _mobileNumberController,
-              decoration: InputDecoration(labelText: 'Mobile Number'),
-            ),
-            TextField(
-              controller: _vehicleNumberController,
-              decoration: InputDecoration(labelText: 'Vehicle Number'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _handleSignup(context);
-              },
-              child: Text('Sign Up'),
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

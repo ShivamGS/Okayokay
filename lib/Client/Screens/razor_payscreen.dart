@@ -239,7 +239,9 @@ class _RazePayState extends State<RazePay> {
                             GestureDetector(
                               onTap: () {
                                 markPaid(userProvider.user!.uid, document.id);
-                                razorpay((double.parse(document['price']) * 100)
+                                razorpay((double.parse(
+                                            document['price'].toString()) *
+                                        100)
                                     .toString());
                               },
                               child: Container(

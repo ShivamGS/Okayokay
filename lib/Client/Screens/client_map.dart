@@ -17,7 +17,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // UserProvider _userprovider = UserProvider();
   final Geolocator _geolocator = Geolocator();
-  final double thresholdDistance = 1100;
+  final double thresholdDistance = 500;
   Map<String, DateTime> visitedMarkers = {};
   final Duration checkInterval = const Duration(minutes: 20);
   bool loaded = false;
@@ -51,6 +51,7 @@ class _LocationMonitorState extends State<LocationMonitor> {
   @override
   void dispose() {
     super.dispose();
+
     _isMounted = false;
 
     // Dispose of any resources, e.g., cancel timers or stop listening to streams.
@@ -71,24 +72,22 @@ class _LocationMonitorState extends State<LocationMonitor> {
               Container(
                 child: Text(nearestLocation_distance.toString()),
               ),
-              Container(
-                height: 500,
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(
-                      _position?.latitude ?? 0.0,
-                      _position?.longitude ?? 0.0,
-                    ),
-                    zoom: 100.0,
+              Flexible(
+                  child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                    _position?.latitude ?? 0.0,
+                    _position?.longitude ?? 0.0,
                   ),
-                  onMapCreated: (GoogleMapController controller) {
-                    setState(() {
-                      _mapController = controller;
-                    });
-                  },
-                  markers: markers,
+                  zoom: 100.0,
                 ),
-              ),
+                onMapCreated: (GoogleMapController controller) {
+                  setState(() {
+                    _mapController = controller;
+                  });
+                },
+                markers: markers,
+              ))
             ],
           )
         : CircularProgressIndicator();
