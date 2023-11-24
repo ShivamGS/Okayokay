@@ -9,6 +9,7 @@ import 'package:toll_system_final0/Client/auth_page.dart';
 import 'package:toll_system_final0/splash_screen_notifier.dart';
 import 'package:toll_system_final0/widgets/loading.dart';
 
+import 'Admin/Auth/admin_auth.dart';
 import 'Admin/admin_page.dart';
 // import 'package:lottie/lottie.dart';
 
@@ -78,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AdminPage(),
+                            builder: (context) => AdminAuth(),
                           ),
                         );
                       },

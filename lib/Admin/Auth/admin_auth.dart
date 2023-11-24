@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:toll_system_final0/Admin/Widgets/snackbar.dart';
+import 'package:toll_system_final0/Admin/admin_page.dart';
 
 class AdminAuth extends StatefulWidget {
   const AdminAuth({super.key});
@@ -24,6 +25,13 @@ class _AdminAuthState extends State<AdminAuth> {
       showCustomSnackBar(context, "Wrong Password");
       return;
     }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdminPage(),
+      ),
+    );
   }
 
   @override
